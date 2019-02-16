@@ -36,7 +36,7 @@ class NkDataSet(Dataset):
         return self.data_len
 
 #csv 의 경로를 설정해 줘야 한다.
-csv_path = "./file/hero.csv"
+csv_path = "./file/Hangul.csv"
 
 custom_dataset = NkDataSet(csv_path)
 
