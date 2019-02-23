@@ -37,7 +37,7 @@ for t in range(500):
 
         #fc 구조 이기 때문에 일렬로 쫙피는 작업이 필요하다.
 
-        images,label = data
+        images, label = data
 
         #그냥 images 를 하면 에러가 난다. 데이터 shape 이 일치하지 않아서
         images = images.view(5,30000)
