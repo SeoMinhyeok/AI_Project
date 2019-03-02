@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from torch.utils.data.dataset import Dataset
 import torch
 from cnn_model import CnnModel
