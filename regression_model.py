@@ -16,13 +16,13 @@ class Regression_model(torch.nn.Module):
     def forward(self, x):
 
         x = self.conv1(x)
-        print(x.size())
+        #print(x.size())
         x = self.relu(x)
         x = self.conv2(x)
-        print(x.size())
+        #print(x.size())
         x = self.relu(x)
         x = x.view(batch_size, -1)
-        print(x.size())
+        #print(x.size())
         x = self.conv3(x)
-        print(x.size())
+        #print(x.size())
         return x
