@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 from torch.utils.data.dataset import Dataset
 import torch
-from custom_model import CustomModel
 from my_dataset import NkDataSet
 from tensorboardX import SummaryWriter
 import set_variable
 import argparse
-import time
-import os
-import torchvision.datasets as mdatset
-import torchvision.transforms as transforms
 from regression_model import Regression_model
+import os
 
 #argparse 커맨드로 부터 인자를 받아서 수행 할 수 있는 기능. fault로 기본값을 지정할 수 도 있다.
 
@@ -68,6 +64,7 @@ def train(my_dataset_loader,model,criterion,optimizer,epoch,writer):
     for i, data in enumerate(my_dataset_loader, 0):
         # Forward pass: Compute predicted y by passing x to the model
         # fc 구조 이기 때문에 일렬로 쫙피는 작업이 필요하다.
+
         images, label = data
         images = torch.autograd.Variable(images)
         label = torch.autograd.Variable(label).float()
@@ -110,19 +107,26 @@ def test(my_dataset_loader, model, criterion, epoch, test_writer):
     test_writer.add_scalar('Test/loss', losses.avg, epoch)
 
 #Data_Load
-csv_path = './file/hero.csv'
+csv_path = './AI_image.csv'
 custom_dataset = NkDataSet(csv_path)
 my_dataset_loader = torch.utils.data.DataLoader(dataset=custom_dataset, batch_size=set_variable.batch_size,
-                                                shuffle=False, num_workers=1)
+                                                shuffle=True, num_workers=1)
+csv_path = './test.csv'
+custom_dataset = NkDataSet(csv_path)
+test_dataset_loader = torch.utils.data.DataLoader(dataset=custom_dataset, batch_size=set_variable.batch_size,
+                                                shuffle=True, num_workers=1)
 
 model = Regression_model()
 print(model)
 #Regression 이기 때문에 loss가 변경 되어야 한다.
 criterion = torch.nn.MSELoss(reduction="sum")
-optimizer = torch.optim.SGD(model.parameters(), lr=1e-4)
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-1)
 writer = SummaryWriter('./log')
 test_writer = SummaryWriter('./log/test')
 
-for epoch in range(500):
+for epoch in range(50):
     train(my_dataset_loader, model, criterion, optimizer, epoch, writer)
-    test(my_dataset_loader, model, criterion, epoch, test_writer)
+    test(test_dataset_loader, model, criterion, epoch, test_writer)
+    save_checkpoint({'epoch' : epoch + 1,
+                     'state_dict' : model.state_dict()
+                     }, filename=os.path.join("./save_dir", 'checkpoint_{}.tar'.format(epoch)))
